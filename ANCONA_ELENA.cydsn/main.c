@@ -25,26 +25,7 @@ int main(void)
 
     for(;;)
     {
-        char recived=UART_ReadRxData();
-        
-        {
-            if (recived=='R')
-            {
-            UART_PutString("Red led ON\r\n");
-            ;
-            }
-            
-           
-            
-            case 'G':
-            UART_PutString("Green led ON\r\n");
-            Green_LED_pin_Write(1);
-            break;
-            
-            case 'B':
-            UART_PutString("Blue led ON\r\n");
-            Blue_LED_pin_Write(1);
-            break;
+       
         }
-    }
-}
+ }
+

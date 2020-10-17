@@ -31,47 +31,39 @@ CY_ISR(Custom_UART_IRS)
             Timer_Start();
             UART_PutString("Red led ON\r\n");
             PWM_RG_WriteCompare2(0);
-            break;
             
-            if (Timer_ReadPeriod()==50)
-            {   
-                PWM_RG_WriteCompare2(51);
-                PWM_RG_WriteCompare2(51);
-                PWM_RG_WriteCompare2(51);
+            if (Timer_ReadPeriod()==0)
+            {
+            UART_Stop();
             }
             
-            
-           
-                
-            
-            
+            break;
           
             case 'G':
+            Timer_Stop();
             Timer_Start();
-            UART_PutString("Red led ON\r\n");
-            PWM_RG_WriteCompare2(0);
-            break;
-  
-            
-            if (recived=='G')
-            {
-            Timer_Start();
-            UART_PutString("Red led ON\r\n");
-            PWM_RG_WriteCompare2(0);
-            }
-            
-           
-            
-            case 'G':
             UART_PutString("Green led ON\r\n");
-            Green_LED_pin_Write(1);
+            PWM_RG_WriteCompare1(0);
+            
+             if (Timer_ReadPeriod()==0)
+            {
+            UART_Stop();
+            }
             break;
             
             case 'B':
+            Timer_Stop();
+            Timer_Start();
             UART_PutString("Blue led ON\r\n");
-            Blue_LED_pin_Write(1);
-            break;
+            PWM_B_WriteCompare(0);
             
+            if (Timer_ReadPeriod()==0)
+            {
+            UART_Stop();
+            }
+            break;
+            }
+        }         
     
     
 }
