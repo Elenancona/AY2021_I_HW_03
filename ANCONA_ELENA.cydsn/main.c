@@ -10,17 +10,41 @@
  * ========================================
 */
 #include "project.h"
+#include "InterruptRoutines_UART.h"
 
 int main(void)
 {
     CyGlobalIntEnable; /* Enable global interrupts. */
 
-    /* Place your initialization/startup code here (e.g. MyInst_Start()) */
+    //Start UART
+    UART_Start();
+    UART_PutString("Send the string!\r\n");
+    isr_UART_StartEx(Custom_UART_IRS);
+    
+    
 
     for(;;)
     {
-        /* Place your application code here. */
+        char recived=UART_ReadRxData();
+        
+        {
+            if (recived=='R')
+            {
+            UART_PutString("Red led ON\r\n");
+            ;
+            }
+            
+           
+            
+            case 'G':
+            UART_PutString("Green led ON\r\n");
+            Green_LED_pin_Write(1);
+            break;
+            
+            case 'B':
+            UART_PutString("Blue led ON\r\n");
+            Blue_LED_pin_Write(1);
+            break;
+        }
     }
 }
-
-/* [] END OF FILE */
