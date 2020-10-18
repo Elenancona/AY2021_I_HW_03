@@ -17,56 +17,91 @@
 #include "PWM_RG.h"
 #include "Timer.h"
 
+#define IDLE 1
+#define HEADER 2
+#define RED 3
+#define GREEN 4
+#define BLUE 5
+#define TAIL 6
+
 CY_ISR(Custom_UART_IRS)
 {
-    if (UART_ReadRxData()== UART_RX_STS_FIFO_NOTEMPTY)
+    int state=IDLE; 
+    if (UART_ReadRxStatus()== UART_RX_STS_FIFO_NOTEMPTY)
     {
-        
+ 
         char recived=UART_ReadRxData();
-        
+       
         {
-            switch (recived)
+            switch (state)
             {
-            case 'R':
-            Timer_Start();
-            UART_PutString("Red led ON\r\n");
-            PWM_RG_WriteCompare2(0);
-            
-            if (Timer_ReadPeriod()==0)
-            {
-            UART_Stop();
-            }
-            
+            case IDLE:
+                if (recived=='v')
+                {
+                    UART_PutString("RGB LED Program $$$\r\n");
+                }
+                else if (recived==0xA0)
+                {
+                    Timer_Start();
+                    Timer_WriteCounter(255);
+                    state++;
+                }
             break;
           
-            case 'G':
-            Timer_Stop();
-            Timer_Start();
-            UART_PutString("Green led ON\r\n");
-            PWM_RG_WriteCompare1(0);
-            
-             if (Timer_ReadPeriod()==0)
-            {
-            UART_Stop();
-            }
+            case HEADER:
+                    Timer_WriteCounter(255);
+                    int RedByte=UART_ReadRxData();
+                    state++;
+                if (Timer_ReadPeriod()==0)
+                {
+                        state=IDLE;
+                }
+            break;
+                    
+            case RED:
+                    Timer_WriteCounter(255);
+                    int GreenByte=UART_ReadRxData();
+                    state++;
+                if (Timer_ReadPeriod()==0)
+                {
+                        state=IDLE;
+                }
             break;
             
-            case 'B':
-            Timer_Stop();
-            Timer_Start();
-            UART_PutString("Blue led ON\r\n");
-            PWM_B_WriteCompare(0);
-            
-            if (Timer_ReadPeriod()==0)
-            {
-            UART_Stop();
-            }
+            case GREEN:
+                    Timer_WriteCounter(255);
+                    int BlueByte=UART_ReadRxData();
+                    state++;
+                if (Timer_ReadPeriod()==0)
+                {
+                        state=IDLE;
+                }
+            break;        
+                
+            case BLUE:
+                    Timer_WriteCounter(255);
+                if (recived==0xC0)
+                {
+                        state++;
+                        Timer_Stop();
+                }
+                if (Timer_ReadPeriod()==0)
+                {
+                        state=IDLE;
+                }
+
+            break;   
+                
+                case TAIL:
+                //Set the RGB LED with the bytes from the UART
+                PWM_RG_WriteCompare1(GreenByte);
+                PWM_RG_WriteCompare2(RedByte); 
+                PWM_B_WriteCompare(BlueByte);
+
+                    state=IDLE;
             break;
             }
-        }         
-    
-    
+        }
+    }
 }
 
-
-/* [] END OF FILE */
