@@ -11,10 +11,10 @@
 */
 #include "Interrupt_isr.h"
 #include "Timer.h"
+#include "InterruptRoutines_UART.h"
 
 
 CY_ISR(Custom_IRS)
 {
   Timer_ReadStatusRegister();
-    
 }

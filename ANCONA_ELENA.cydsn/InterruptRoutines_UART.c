@@ -24,13 +24,20 @@
 #define BLUE 5
 #define TAIL 6
 
+extern uint8_t state;
+extern uint8_t recived;
+
+uint8_t GreenByte;
+uint8_t BlueByte;
+uint8_t RedByte;
+
 CY_ISR(Custom_UART_IRS)
 {
-    int state=IDLE; 
+    state=IDLE; 
     if (UART_ReadRxStatus()== UART_RX_STS_FIFO_NOTEMPTY)
     {
  
-        char recived=UART_ReadRxData();
+        recived=UART_ReadRxData();
        
         {
             switch (state)
@@ -50,32 +57,23 @@ CY_ISR(Custom_UART_IRS)
           
             case HEADER:
                     Timer_WriteCounter(255);
-                    int RedByte=UART_ReadRxData();
+                    RedByte=UART_ReadRxData();
                     state++;
-                if (Timer_ReadPeriod()==0)
-                {
-                        state=IDLE;
-                }
+                
             break;
                     
             case RED:
                     Timer_WriteCounter(255);
-                    int GreenByte=UART_ReadRxData();
+                    GreenByte=UART_ReadRxData();
                     state++;
-                if (Timer_ReadPeriod()==0)
-                {
-                        state=IDLE;
-                }
+                
             break;
             
             case GREEN:
                     Timer_WriteCounter(255);
-                    int BlueByte=UART_ReadRxData();
+                    BlueByte=UART_ReadRxData();
                     state++;
-                if (Timer_ReadPeriod()==0)
-                {
-                        state=IDLE;
-                }
+                
             break;        
                 
             case BLUE:
@@ -85,21 +83,10 @@ CY_ISR(Custom_UART_IRS)
                         state++;
                         Timer_Stop();
                 }
-                if (Timer_ReadPeriod()==0)
-                {
-                        state=IDLE;
-                }
 
             break;   
-                
-                case TAIL:
-                //Set the RGB LED with the bytes from the UART
-                PWM_RG_WriteCompare1(GreenByte);
-                PWM_RG_WriteCompare2(RedByte); 
-                PWM_B_WriteCompare(BlueByte);
 
-                    state=IDLE;
-            break;
+                
             }
         }
     }
