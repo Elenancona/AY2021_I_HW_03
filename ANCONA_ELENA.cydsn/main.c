@@ -36,9 +36,9 @@ int main(void)
     
     //Set the RGB LED OFF at power on
    
-    PWM_RG_WriteCompare1(0); //Duty cicle 0% (LED OFF)
-    PWM_RG_WriteCompare2(0); 
-    PWM_B_WriteCompare(0); 
+    PWM_RG_WriteCompare1(255); //LED OFF
+    PWM_RG_WriteCompare2(255); 
+    PWM_B_WriteCompare(255); 
     
     
     //Inizializing the IRS

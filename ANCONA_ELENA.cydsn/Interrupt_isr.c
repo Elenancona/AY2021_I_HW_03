@@ -13,8 +13,13 @@
 #include "Timer.h"
 #include "InterruptRoutines_UART.h"
 
+#define IDLE 1
+
+extern uint8_t state;
+
 
 CY_ISR(Custom_IRS)
 {
-  Timer_ReadStatusRegister();
+    Timer_ReadStatusRegister();
+    state=IDLE;
 }

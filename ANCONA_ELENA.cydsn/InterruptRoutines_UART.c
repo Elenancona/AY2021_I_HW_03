@@ -49,31 +49,29 @@ CY_ISR(Custom_UART_IRS)
                 }
                 else if (recived==0xA0)
                 {
-                    Timer_Start();
                     Timer_WriteCounter(255);
+                    Timer_Start();
                     state++;
                 }
             break;
           
             case HEADER:
                     Timer_WriteCounter(255);
-                    RedByte=UART_ReadRxData();
+                    RedByte=recived;
                     state++;
                 
             break;
                     
             case RED:
                     Timer_WriteCounter(255);
-                    GreenByte=UART_ReadRxData();
+                    GreenByte=recived;
                     state++;
-                
             break;
             
             case GREEN:
                     Timer_WriteCounter(255);
-                    BlueByte=UART_ReadRxData();
+                    BlueByte=recived;
                     state++;
-                
             break;        
                 
             case BLUE:
